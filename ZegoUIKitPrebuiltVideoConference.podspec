@@ -1,5 +1,5 @@
 #
-#  Be sure to run `pod spec lint ZegoPrebuiltVideoConference.podspec' to ensure this is a
+#  Be sure to run `pod spec lint ZegoUIKitPrebuiltVideoConference.podspec' to ensure this is a
 #  valid spec and to remove all comments including this before submitting the spec.
 #
 #  To learn more about Podspec attributes see https://guides.cocoapods.org/syntax/podspec.html
@@ -15,16 +15,16 @@ Pod::Spec.new do |spec|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  spec.name         = "ZegoPrebuiltVideoConference"
+  spec.name         = "ZegoUIKitPrebuiltVideoConference"
   spec.version      = "1.0.0"
-  spec.summary      = "ZegoPrebuiltVideoConference iOS SDK."
+  spec.summary      = "ZegoUIKitPrebuiltVideoConference iOS SDK."
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
   #   * Try to keep it short, snappy and to the point.
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
-  spec.description  = "ZegoPrebuiltVideoConference SDK for iOS by ZEGO"
+  spec.description  = "ZegoUIKitPrebuiltVideoConference SDK for iOS by ZEGO"
 
   spec.homepage     = "https://www.zegocloud.com"
   spec.documentation_url = "https://docs.zegocloud.com"
@@ -89,8 +89,8 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "ZegoPrebuiltVideoConference","ZegoPrebuiltVideoConference/**/*.swift"
-  spec.resource_bundle = {'ZegoPrebuiltVideoConference' => ['ZegoPrebuiltVideoConference/Resource/*.{xcassets}']}
+  spec.source_files  = "ZegoUIKitPrebuiltVideoConference","ZegoUIKitPrebuiltVideoConference/**/*.swift"
+  spec.resource_bundle = {'ZegoUIKitPrebuiltVideoConference' => ['ZegoUIKitPrebuiltVideoConference/Resource/*.{xcassets}']}
 
   # spec.public_header_files = "Classes/**/*.h"
 
