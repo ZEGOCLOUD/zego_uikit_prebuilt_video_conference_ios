@@ -32,7 +32,8 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     
     public weak var delegate: ZegoUIKitPrebuiltVideoConferenceVCDelegate?
     
-    private var config: ZegoUIKitPrebuiltVideoConferenceConfig = ZegoUIKitPrebuiltVideoConferenceConfig()
+    private let help: ZegoUIKitPrebuiltVideoConferenceVC_Help = ZegoUIKitPrebuiltVideoConferenceVC_Help()
+    fileprivate var config: ZegoUIKitPrebuiltVideoConferenceConfig = ZegoUIKitPrebuiltVideoConferenceConfig()
     private var userID: String?
     private var userName: String?
     private var roomID: String?
@@ -47,7 +48,7 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     
     lazy var avContainer: ZegoAudioVideoContainer = {
         let container: ZegoAudioVideoContainer = ZegoAudioVideoContainer()
-        container.delegate = self
+        container.delegate = self.help
         return container
     }()
     
@@ -81,21 +82,12 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     
     public init(_ appID: UInt32, appSign: String, userID: String, userName: String, conferenceID: String, config: ZegoUIKitPrebuiltVideoConferenceConfig?) {
         super.init(nibName: nil, bundle: nil)
+        self.help.videoConferenceVC = self
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
         ZegoUIKit.shared.localUserInfo = ZegoUIkitUser.init(userID, userName)
         self.userID = userID
         self.userName = userName
         self.roomID = conferenceID
-        if let config = config {
-            self.config = config
-        }
-    }
-    
-    public init(_ data: ZegoCallInvitationData, config: ZegoUIKitPrebuiltVideoConferenceConfig?) {
-        super.init(nibName: nil, bundle: nil)
-        self.userID = ZegoUIKit.shared.localUserInfo?.userID
-        self.userName = ZegoUIKit.shared.localUserInfo?.userName
-        self.roomID = data.callID
         if let config = config {
             self.config = config
         }
@@ -261,19 +253,22 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     }
 }
 
-extension ZegoUIKitPrebuiltVideoConferenceVC: ZegoAudioVideoContainerDelegate {
+class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainerDelegate {
+    
+    weak var videoConferenceVC: ZegoUIKitPrebuiltVideoConferenceVC?
     
     public func getForegroundView(_ userInfo: ZegoUIkitUser?) -> UIView? {
         guard let userInfo = userInfo else {
             return nil
         }
         
-        let foregroundView: UIView? = self.delegate?.getForegroundView?(userInfo)
+        let foregroundView: UIView? = self.videoConferenceVC?.delegate?.getForegroundView?(userInfo)
         if let foregroundView = foregroundView {
             return foregroundView
         } else {
             // user nomal foregroundView
-            let nomalForegroundView: ZegoVideoConferenceNomalForegroundView = ZegoVideoConferenceNomalForegroundView.init(self.config, frame: .zero)
+            guard let videoConferenceVC = self.videoConferenceVC else { return  nil }
+            let nomalForegroundView: ZegoVideoConferenceNomalForegroundView = ZegoVideoConferenceNomalForegroundView.init(videoConferenceVC.config, frame: .zero)
             nomalForegroundView.userInfo = userInfo
             return nomalForegroundView
         }
@@ -288,7 +283,7 @@ extension ZegoUIKitPrebuiltVideoConferenceVC: ZegoAudioVideoContainerDelegate {
 }
 
 extension ZegoUIKitPrebuiltVideoConferenceVC: ZegoVideoConferenceDarkBottomMenuBarDelegate,ZegoVideoConferenceLightBottomMenuBarDelegate, ZegoConferenceMemberListDelegate {
-    public func onMenuBarMoreButtonClick(_ buttonList: [UIView]) {
+    func onMenuBarMoreButtonClick(_ buttonList: [UIView]) {
         let newList:[UIView] = buttonList
         let vc: ZegoVideoConferenceMoreView = ZegoVideoConferenceMoreView()
         vc.buttonList = newList

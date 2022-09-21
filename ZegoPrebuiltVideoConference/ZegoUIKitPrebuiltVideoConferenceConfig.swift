@@ -63,8 +63,8 @@ public class ZegoBottomMenuBarConfig: NSObject {
 }
 
 public class ZegoMemberListConfig: NSObject {
-    var showMicrophoneState: Bool = true
-    var showCameraState: Bool = true
+    public var showMicrophoneState: Bool = true
+    public var showCameraState: Bool = true
 }
 
 public class ZegoTopMenuBarConfig: NSObject {
