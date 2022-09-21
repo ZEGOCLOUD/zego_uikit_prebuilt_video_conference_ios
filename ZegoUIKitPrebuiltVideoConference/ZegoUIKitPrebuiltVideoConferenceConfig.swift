@@ -58,7 +58,7 @@ public class ZegoBottomMenuBarConfig: NSObject {
     public var hideAutomatically: Bool = true
     /// Whether the user can click the position of the non-responsive area of the screen, and fold up the top and bottom
     public var hideByClick: Bool = true
-    public var style: ZegoMenuBarStyle = .light
+    public var style: ZegoMenuBarStyle = .dark
 
 }
 
@@ -72,7 +72,7 @@ public class ZegoTopMenuBarConfig: NSObject {
     public var maxCount: UInt = 3
     public var hideAutomatically: Bool = true
     public var hideByClick: Bool = true
-    public var style: ZegoMenuBarStyle = .light
+    public var style: ZegoMenuBarStyle = .dark
 }
 
 

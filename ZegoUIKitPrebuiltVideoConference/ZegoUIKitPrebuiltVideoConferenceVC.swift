@@ -74,7 +74,11 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
         topMenuBar.titleLabel.text = "Meeting"
         topMenuBar.titleLabel.textColor = UIColor.colorWithHexString("#FFFFFF")
         topMenuBar.titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        topMenuBar.backgroundColor = UIColor.colorWithHexString("#222222",alpha: 0.9)
+        if self.config.topMenuBarConfig.style == .dark {
+            topMenuBar.backgroundColor = UIColor.colorWithHexString("#222222",alpha: 0.9)
+        } else {
+            topMenuBar.backgroundColor = UIColor.clear
+        }
         topMenuBar.showQuitDialogVC = self
         topMenuBar.config = self.config
         return topMenuBar
