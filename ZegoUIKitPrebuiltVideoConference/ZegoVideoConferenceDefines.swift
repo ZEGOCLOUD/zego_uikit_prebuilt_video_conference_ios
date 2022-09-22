@@ -47,6 +47,7 @@ enum ZegoUIKitVideoConferenceIconSetType: String, Hashable {
     case icon_more_light
     case icon_member_normal
     case icon_back
+    case icon_camera_overturn
     
     // MARK: - Image handling
     func load() -> UIImage {

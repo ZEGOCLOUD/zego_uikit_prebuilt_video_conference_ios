@@ -106,6 +106,8 @@ class ZegoTopMenuBar: UIView {
             switch item {
             case .switchCameraButton:
                 let flipCameraComponent: ZegoSwitchCameraButton = ZegoSwitchCameraButton()
+                flipCameraComponent.iconBackFacingCamera = ZegoUIKitVideoConferenceIconSetType.icon_camera_overturn.load()
+                flipCameraComponent.iconFrontFacingCamera = ZegoUIKitVideoConferenceIconSetType.icon_camera_overturn.load()
                 self.buttons.append(flipCameraComponent)
                 self.addSubview(flipCameraComponent)
             case .toggleCameraButton:
