@@ -50,7 +50,7 @@ enum ZegoUIKitVideoConferenceIconSetType: String, Hashable {
     
     // MARK: - Image handling
     func load() -> UIImage {
-        let image = UIImage.resource.loadImage(name: self.rawValue, bundleName: "ZegoPrebuiltVideoConference") ?? UIImage()
+        let image = UIImage.resource.loadImage(name: self.rawValue, bundleName: "ZegoUIKitPrebuiltVideoConference") ?? UIImage()
         return image
     }
 }
