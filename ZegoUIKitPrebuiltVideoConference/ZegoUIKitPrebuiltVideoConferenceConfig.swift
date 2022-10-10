@@ -27,6 +27,8 @@ public class ZegoUIKitPrebuiltVideoConferenceConfig: NSObject {
     public var memberListConfig: ZegoMemberListConfig = ZegoMemberListConfig()
     public var topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
     
+    public var inRoomNotificationViewConfig: ZegoInRoomNotificationViewConfig = ZegoInRoomNotificationViewConfig()
+    
     public override init() {
         super.init()
         let conferenceLayout = ZegoLayout()
@@ -51,7 +53,7 @@ public class ZegoPrebuiltAudioVideoViewConfig: NSObject {
 
 public class ZegoBottomMenuBarConfig: NSObject {
     /// Buttons that need to be displayed on the MenuBar are displayed in the order of the actual List
-    public var buttons: [ZegoMenuBarButtonName] = [.toggleCameraButton,.toggleMicrophoneButton,.swtichAudioOutputButton,.leaveButton]
+    public var buttons: [ZegoMenuBarButtonName] = [.toggleCameraButton,.toggleMicrophoneButton, .leaveButton,.swtichAudioOutputButton,.chatButton]
     /// 在MenuBar最多能显示的按钮数量，该值最大为5。如果超过了该值，则显示“更多”按钮.注意这个值是包含“更多”按钮。
     public var maxCount: UInt = 5
     /// Yes no operation on the screen for 5 seconds, or if the user clicks the position of the non-response area on the screen, the top and bottom will be folded up
@@ -68,11 +70,13 @@ public class ZegoMemberListConfig: NSObject {
 }
 
 public class ZegoTopMenuBarConfig: NSObject {
-    public var buttons: [ZegoMenuBarButtonName] = [.showMemberListButton,.switchCameraButton]
+    public var buttons: [ZegoMenuBarButtonName] = [.switchCameraButton, .showMemberListButton]
     public var maxCount: UInt = 3
     public var hideAutomatically: Bool = true
     public var hideByClick: Bool = true
     public var style: ZegoMenuBarStyle = .dark
+    public var isVisible: Bool = true
+    public var title: String = "Conference"
 }
 
 

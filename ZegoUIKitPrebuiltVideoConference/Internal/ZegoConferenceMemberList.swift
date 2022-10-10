@@ -51,7 +51,7 @@ class ZegoConferenceMemberList: UIView {
     
     lazy var memberList: ZegoMemberList = {
         let listView: ZegoMemberList = ZegoMemberList()
-        listView.backgroundColor = UIColor.colorWithHexString("#242736")
+        listView.backgroundColor = UIColor.colorWithHexString("#222222")
         listView.delegate = self
         return listView
     }()

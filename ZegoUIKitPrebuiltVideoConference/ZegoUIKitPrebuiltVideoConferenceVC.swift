@@ -15,6 +15,19 @@ import ZegoUIKitSDK
     @objc optional func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
     @objc optional func getMemberListItemHeight(_ userInfo: ZegoUIkitUser) -> CGFloat
     @objc optional func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat
+    
+    //MARK: - ZegoInRoomChatViewDelegate
+    @objc optional func getChatViewItemView(_ tableView: UITableView, indexPath: IndexPath, message: ZegoInRoomMessage) -> UITableViewCell?
+    @objc optional func getChatViewItemHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, message: ZegoInRoomMessage) -> CGFloat
+    
+    //MARK: - ZegoInRoomNotificationViewDelegate
+    @objc optional func getJoinCell(_ tableView: UITableView, indexPath: IndexPath, uiKitUser: ZegoUIkitUser) -> UITableViewCell?
+    @objc optional func getLeaveCell(_ tableView: UITableView, indexPath: IndexPath, uiKitUser: ZegoUIkitUser) -> UITableViewCell?
+    @objc optional func getMessageCell(_ tableView: UITableView, indexPath: IndexPath, inRoomMessage: ZegoInRoomMessage) -> UITableViewCell?
+    @objc optional func getJoinCellHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, uiKitUser: ZegoUIkitUser) -> CGFloat
+    @objc optional func getLeaveCellHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, uiKitUser: ZegoUIkitUser) -> CGFloat
+    @objc optional func getMessageCellHeight(_ tableView: UITableView, indexPath: IndexPath, inRoomMessage: ZegoInRoomMessage) -> CGFloat
+    
 }
 
 open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
@@ -71,7 +84,8 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     
     lazy var topBar: ZegoTopMenuBar = {
         let topMenuBar = ZegoTopMenuBar()
-        topMenuBar.titleLabel.text = "Meeting"
+        topMenuBar.isHidden = !self.config.topMenuBarConfig.isVisible
+        topMenuBar.titleLabel.text = self.config.topMenuBarConfig.title
         topMenuBar.titleLabel.textColor = UIColor.colorWithHexString("#FFFFFF")
         topMenuBar.titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         if self.config.topMenuBarConfig.style == .dark {
@@ -83,6 +97,19 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
         topMenuBar.config = self.config
         return topMenuBar
     }()
+    
+    lazy var notificationMessageView: ZegoInRoomNotificationView = {
+        let notificationView = ZegoInRoomNotificationView(frame: CGRect.zero, config: nil)
+        notificationView.delegate = self.help
+        ZegoVideoConferenceNotiModelBuild.messageViewWidth = adaptLandscapeWidth(210)
+        notificationView.registerCell(ZegoVideoConferenceNotiCell.self, forCellReuseIdentifier: "ZegoVideoConferenceNotiCell")
+        return notificationView
+    }()
+    
+//    lazy var inRoomMessageView: ZegoInRoomMessageView = {
+//        let messageView = ZegoInRoomMessageView(frame: CGRect.zero)
+//        return messageView
+//    }()
     
     public init(_ appID: UInt32, appSign: String, userID: String, userName: String, conferenceID: String, config: ZegoUIKitPrebuiltVideoConferenceConfig?) {
         super.init(nibName: nil, bundle: nil)
@@ -117,6 +144,7 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
             self.bottomBarHeight = adaptLandscapeHeight(61) + UIKitBottomSafeAreaHeight
             self.view.addSubview(self.lightMenuBar)
         }
+        self.view.addSubview(self.notificationMessageView)
         self.setupLayout()
     }
     
@@ -136,6 +164,7 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
             self.topBar.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.topMenuBarHeight)
             self.currentBottomMenuBar?.frame = CGRect.init(x: 0, y: self.view.frame.size.height - self.bottomBarHeight, width: self.view.frame.size.width, height: self.bottomBarHeight)
             self.menuBar.addCorner(conrners: [.topLeft,.topRight], radius: 16)
+            self.notificationMessageView.frame = CGRect(x: 12, y: self.currentBottomMenuBar?.frame.minY ?? 0 - 12, width: adaptLandscapeWidth(210), height: 0)
             self.lastFrame = self.view.frame
         }
     }
@@ -223,6 +252,7 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
             if self.config.bottomMenuBarConfig.hideAutomatically {
                 let bottomY: CGFloat = isHidden ? UIScreen.main.bounds.size.height:UIScreen.main.bounds.size.height - self.bottomBarHeight
                 self.currentBottomMenuBar?.frame = CGRect.init(x: 0, y: bottomY, width: UIScreen.main.bounds.size.width, height: self.bottomBarHeight)
+                self.notificationMessageView.frame = CGRect(x: self.notificationMessageView.frame.origin.x, y: bottomY - 12 - self.notificationMessageView.bounds.size.height, width: self.notificationMessageView.bounds.size.width, height: self.notificationMessageView.bounds.size.height)
             }
         }
     }
@@ -257,7 +287,7 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     }
 }
 
-class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainerDelegate {
+class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainerDelegate, ZegoInRoomNotificationViewDelegate {
     
     weak var videoConferenceVC: ZegoUIKitPrebuiltVideoConferenceVC?
     
@@ -284,9 +314,58 @@ class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainer
         let labelSize: CGRect = NSString(string: text).boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
         return labelSize.width
     }
+    
+    //MARK: - ZegoInRoomNotificationViewDelegate
+    func getJoinCell(_ tableView: UITableView, indexPath: IndexPath, uiKitUser: ZegoUIkitUser) -> UITableViewCell? {
+        let cell: UITableViewCell? = self.videoConferenceVC?.delegate?.getJoinCell?(tableView, indexPath: indexPath, uiKitUser: uiKitUser)
+        if let cell = cell {
+            return cell
+        } else {
+            let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: "joins the conference.", isUserLeaveNoti: false, isUserJoinNoti: true)
+            let conferenceCell: ZegoVideoConferenceNotiCell = tableView.dequeueReusableCell(withIdentifier: "ZegoVideoConferenceNotiCell") as! ZegoVideoConferenceNotiCell
+            conferenceCell.messageModel = messageModel
+            conferenceCell.selectionStyle = .none
+            conferenceCell.backgroundColor = UIColor.clear
+            return conferenceCell
+        }
+    }
+    
+    func getLeaveCell(_ tableView: UITableView, indexPath: IndexPath, uiKitUser: ZegoUIkitUser) -> UITableViewCell? {
+        let cell: UITableViewCell? = self.videoConferenceVC?.delegate?.getLeaveCell?(tableView, indexPath: indexPath, uiKitUser: uiKitUser)
+        if let cell = cell {
+            return cell
+        } else {
+            let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: "left the conference.", isUserLeaveNoti: true, isUserJoinNoti: false)
+            let conferenceCell: ZegoVideoConferenceNotiCell = tableView.dequeueReusableCell(withIdentifier: "ZegoVideoConferenceNotiCell") as! ZegoVideoConferenceNotiCell
+            conferenceCell.messageModel = messageModel
+            conferenceCell.selectionStyle = .none
+            conferenceCell.backgroundColor = UIColor.clear
+            return conferenceCell
+        }
+    }
+    
+    func getMessageCell(_ tableView: UITableView, indexPath: IndexPath, inRoomMessage: ZegoInRoomMessage) -> UITableViewCell? {
+        return self.videoConferenceVC?.delegate?.getMessageCell?(tableView, indexPath: indexPath, inRoomMessage: inRoomMessage)
+    }
+    
+    func getJoinCellHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, uiKitUser: ZegoUIkitUser) -> CGFloat {
+        let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: "joins the conference.", isUserLeaveNoti: false, isUserJoinNoti: true)
+        let cellHeight: CGFloat = self.videoConferenceVC?.delegate?.getJoinCellHeight?(tableView, heightForRowAt: indexPath, uiKitUser: uiKitUser) ?? messageModel.messageHeight + 10 + 4.0
+        return cellHeight
+    }
+    
+    func getLeaveCellHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, uiKitUser: ZegoUIkitUser) -> CGFloat {
+        let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: "left the conference.", isUserLeaveNoti: false, isUserJoinNoti: true)
+        let cellHeight: CGFloat = self.videoConferenceVC?.delegate?.getJoinCellHeight?(tableView, heightForRowAt: indexPath, uiKitUser: uiKitUser) ?? messageModel.messageHeight + 10 + 4.0
+        return cellHeight
+    }
+    
+    func getMessageCellHeight(_ tableView: UITableView, indexPath: IndexPath, inRoomMessage: ZegoInRoomMessage) -> CGFloat {
+        return self.videoConferenceVC?.delegate?.getMessageCellHeight?(tableView, indexPath: indexPath, inRoomMessage: inRoomMessage) ?? -1
+    }
 }
 
-extension ZegoUIKitPrebuiltVideoConferenceVC: ZegoVideoConferenceDarkBottomMenuBarDelegate,ZegoVideoConferenceLightBottomMenuBarDelegate, ZegoConferenceMemberListDelegate {
+extension ZegoUIKitPrebuiltVideoConferenceVC: ZegoVideoConferenceDarkBottomMenuBarDelegate,ZegoVideoConferenceLightBottomMenuBarDelegate, ZegoConferenceMemberListDelegate, ZegoVideoConferenceChatViewDelegate {
     func onMenuBarMoreButtonClick(_ buttonList: [UIView]) {
         let newList:[UIView] = buttonList
         let vc: ZegoVideoConferenceMoreView = ZegoVideoConferenceMoreView()
@@ -316,5 +395,14 @@ extension ZegoUIKitPrebuiltVideoConferenceVC: ZegoVideoConferenceDarkBottomMenuB
     
     func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat {
         return self.delegate?.getMemberListHeaderHeight?(tableView, section: section) ?? 65
+    }
+    
+    //MARK: -ZegoVideoConferenceChatViewDelegate
+    func getChatViewItemView(_ tableView: UITableView, indexPath: IndexPath, message: ZegoInRoomMessage) -> UITableViewCell? {
+        return self.delegate?.getChatViewItemView?(tableView, indexPath: indexPath, message: message)
+    }
+    
+    func getChatViewItemHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, message: ZegoInRoomMessage) -> CGFloat {
+        return self.delegate?.getChatViewItemHeight?(tableView, heightForRowAt: indexPath, message: message) ?? -1
     }
 }

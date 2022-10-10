@@ -112,12 +112,16 @@ class ZegoTopMenuBar: UIView {
                 self.addSubview(flipCameraComponent)
             case .toggleCameraButton:
                 let switchCameraComponent: ZegoToggleCameraButton = ZegoToggleCameraButton()
+                switchCameraComponent.iconCameraOn = ZegoUIKitVideoConferenceIconSetType.top_icon_camera_normal.load()
+                switchCameraComponent.iconCameraOff = ZegoUIKitVideoConferenceIconSetType.top_icon_camera_off.load()
                 switchCameraComponent.isOn = self.config.turnOnCameraWhenJoining
                 switchCameraComponent.userID = ZegoUIKit.shared.localUserInfo?.userID
                 self.buttons.append(switchCameraComponent)
                 self.addSubview(switchCameraComponent)
             case .toggleMicrophoneButton:
                 let micButtonComponent: ZegoToggleMicrophoneButton = ZegoToggleMicrophoneButton()
+                micButtonComponent.iconMicrophoneOn = ZegoUIKitVideoConferenceIconSetType.top_icon_mic_normal.load()
+                micButtonComponent.iconMicrophoneOff = ZegoUIKitVideoConferenceIconSetType.top_icon_mic_off.load()
                 micButtonComponent.userID = ZegoUIKit.shared.localUserInfo?.userID
                 micButtonComponent.isOn = self.config.turnOnMicrophoneWhenJoining
                 self.buttons.append(micButtonComponent)
@@ -125,10 +129,14 @@ class ZegoTopMenuBar: UIView {
             case .swtichAudioOutputButton:
                 let audioOutputButtonComponent: ZegoSwitchAudioOutputButton = ZegoSwitchAudioOutputButton()
                 audioOutputButtonComponent.useSpeaker = self.config.useSpeakerWhenJoining
+                audioOutputButtonComponent.iconSpeaker = ZegoUIKitVideoConferenceIconSetType.top_icon_voice_normal.load()
+                audioOutputButtonComponent.iconBluetooth = ZegoUIKitVideoConferenceIconSetType.top_icon_bluetooth_nor.load()
+                audioOutputButtonComponent.iconEarSpeaker = ZegoUIKitVideoConferenceIconSetType.top_icon_voice_off.load()
                 self.buttons.append(audioOutputButtonComponent)
                 self.addSubview(audioOutputButtonComponent)
             case .leaveButton:
                 let endButtonComponent: ZegoLeaveButton = ZegoLeaveButton()
+                endButtonComponent.iconLeave = ZegoUIKitVideoConferenceIconSetType.top_icon_hand_up.load()
                 if let leaveConfirmDialogInfo = self.config.leaveConfirmDialogInfo {
                     if leaveConfirmDialogInfo.title == "" || leaveConfirmDialogInfo.title == nil {
                         leaveConfirmDialogInfo.title = "Leave the conference"
@@ -155,6 +163,12 @@ class ZegoTopMenuBar: UIView {
                 self.buttons.append(memberButton)
                 self.addSubview(memberButton)
                 memberButton.addTarget(self, action: #selector(memberButtonClick), for: .touchUpInside)
+            case .chatButton:
+                let messageButton: ZegoVideoConferenceChatButton = ZegoVideoConferenceChatButton()
+                messageButton.setImage(ZegoUIKitVideoConferenceIconSetType.top_icon_im.load(), for: .normal)
+                self.buttons.append(messageButton)
+                self.addSubview(messageButton)
+                messageButton.addTarget(self, action: #selector(messageButtonClick), for: .touchUpInside)
             }
         }
     }
@@ -167,11 +181,21 @@ class ZegoTopMenuBar: UIView {
         memberListView.frame = CGRect(x: 0, y: 0, width: self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight)
         self.showQuitDialogVC?.view.addSubview(memberListView)
     }
+    
+    @objc func messageButtonClick() {
+        let messageView: ZegoVideoConferenceChatView = ZegoVideoConferenceChatView()
+        messageView.delegate = self.showQuitDialogVC as? ZegoVideoConferenceChatViewDelegate
+        messageView.frame = CGRect(x: 0, y: 0, width:self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight )
+        self.showQuitDialogVC?.view.addSubview(messageView)
+    }
 
 }
 
 extension ZegoTopMenuBar: LeaveButtonDelegate {
     func onLeaveButtonClick(_ isLeave: Bool) {
         self.delegate?.onLeaveVideoConference(isLeave)
+        if isLeave {
+            showQuitDialogVC?.dismiss(animated: true, completion: nil)
+        }
     }
 }

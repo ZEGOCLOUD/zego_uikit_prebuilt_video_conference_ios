@@ -16,6 +16,7 @@ public enum ZegoMenuBarButtonName: Int {
     case switchCameraButton
     case swtichAudioOutputButton
     case showMemberListButton
+    case chatButton
 }
 
 public enum ZegoViewPosition: Int {
@@ -30,24 +31,27 @@ public enum ZegoMenuBarStyle: Int {
     case dark
 }
 
-public class ZegoCallInvitationData: NSObject {
-    public var callID: String?
-    public var type: ZegoInvitationType?
-    public var invitees: [ZegoUIkitUser]?
-    public var inviter: ZegoUIkitUser?
-}
-
 enum ZegoUIKitVideoConferenceIconSetType: String, Hashable {
     
-    case call_accept_icon
-    case call_accept_selected_icon
-    case call_video_icon
-    case call_video_selected_icon
     case icon_more
     case icon_more_light
     case icon_member_normal
     case icon_back
     case icon_camera_overturn
+    case icon_message_normal
+    case icon_message_press
+    
+    case top_icon_camera_normal
+    case top_icon_camera_off
+    case top_icon_bluetooth_nor
+    case top_icon_hand_up
+    case top_icon_im
+    case top_icon_mic_normal
+    case top_icon_mic_off
+    case top_icon_more
+    case top_icon_voice_normal
+    case top_icon_voice_off
+    
     
     // MARK: - Image handling
     func load() -> UIImage {

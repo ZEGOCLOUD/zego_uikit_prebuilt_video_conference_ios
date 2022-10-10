@@ -241,6 +241,11 @@ class ZegoVideoConferenceDarkBottomMenuBar: UIView {
                 self.buttons.append(memberButton)
                 self.addSubview(memberButton)
                 memberButton.addTarget(self, action: #selector(memberButtonClick), for: .touchUpInside)
+            case .chatButton:
+                let messageButton: ZegoVideoConferenceChatButton = ZegoVideoConferenceChatButton()
+                self.buttons.append(messageButton)
+                self.addSubview(messageButton)
+                messageButton.addTarget(self, action: #selector(messageButtonClick), for: .touchUpInside)
             }
         }
     }
@@ -250,7 +255,19 @@ class ZegoVideoConferenceDarkBottomMenuBar: UIView {
     }
     
     @objc func memberButtonClick() {
-        
+        let memberListView: ZegoConferenceMemberList = ZegoConferenceMemberList()
+        memberListView.showCameraStateOnMemberList = self.config.memberListConfig.showCameraState
+        memberListView.showMicroPhoneStateOnMemberList = self.config.memberListConfig.showMicrophoneState
+        memberListView.delegate = self.showQuitDialogVC as? ZegoConferenceMemberListDelegate
+        memberListView.frame = CGRect(x: 0, y: 0, width: self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight)
+        self.showQuitDialogVC?.view.addSubview(memberListView)
+    }
+    
+    @objc func messageButtonClick() {
+        let messageView: ZegoVideoConferenceChatView = ZegoVideoConferenceChatView()
+        messageView.delegate = self.showQuitDialogVC as? ZegoVideoConferenceChatViewDelegate
+        messageView.frame = CGRect(x: 0, y: 0, width:self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight )
+        self.showQuitDialogVC?.view.addSubview(messageView)
     }
     
 }
