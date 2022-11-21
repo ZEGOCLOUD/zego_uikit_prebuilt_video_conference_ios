@@ -24,7 +24,7 @@ class ZegoVideoConferenceNomalForegroundView: UIView {
         return view
     }()
     var config: ZegoUIKitPrebuiltVideoConferenceConfig?
-    var userInfo: ZegoUIkitUser? {
+    var userInfo: ZegoUIKitUser? {
         didSet {
             guard let userInfo = userInfo else {
                 return

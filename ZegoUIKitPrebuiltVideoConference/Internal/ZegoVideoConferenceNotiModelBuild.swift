@@ -33,7 +33,7 @@ class ZegoVideoConferenceNotiModelBuild: NSObject {
         }
     }
     
-    static func buildModel(with user: ZegoUIkitUser?, message: String, isUserLeaveNoti: Bool = false, isUserJoinNoti: Bool = false) -> ZegoVideoConferenceNotiModel {
+    static func buildModel(with user: ZegoUIKitUser?, message: String, isUserLeaveNoti: Bool = false, isUserJoinNoti: Bool = false) -> ZegoVideoConferenceNotiModel {
         let attributedStr: NSMutableAttributedString = NSMutableAttributedString()
         
         let nameAttributes = getNameAttributes()

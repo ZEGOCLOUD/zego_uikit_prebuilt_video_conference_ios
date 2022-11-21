@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ZegoUIKitPrebuiltVideoConference"
-  spec.version      = "1.1.0"
+  spec.version      = "1.1.1"
   spec.summary      = "ZegoUIKitPrebuiltVideoConference iOS SDK."
 
   # This description is used to generate tags and improve search results.
@@ -90,7 +90,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.source_files  = "ZegoUIKitPrebuiltVideoConference","ZegoUIKitPrebuiltVideoConference/**/*.swift"
-  spec.resource_bundle = {'ZegoUIKitPrebuiltVideoConference' => ['ZegoUIKitPrebuiltVideoConference/Resource/*.{xcassets}']}
+  spec.resource_bundle = {'ZegoUIKitPrebuiltVideoConference' => ['ZegoUIKitPrebuiltVideoConference/Resource/*.{png}']}
 
   # spec.public_header_files = "Classes/**/*.h"
 
