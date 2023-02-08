@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ZegoUIKitPrebuiltVideoConference"
-  spec.version      = "1.1.1"
+  spec.version      = "2.0.0"
   spec.summary      = "ZegoUIKitPrebuiltVideoConference iOS SDK."
 
   # This description is used to generate tags and improve search results.
@@ -78,7 +78,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://github.com/ZEGOCLOUD/zego_uikit_prebuilt_video_conference_ios.git", :tag => "v#{spec.version.to_s}" }
+  spec.source       = { :git => "https://github.com/ZEGOCLOUD/zego_uikit_prebuilt_video_conference_ios.git", :tag => "#{spec.version.to_s}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -133,6 +133,6 @@ Pod::Spec.new do |spec|
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   # spec.dependency "JSONKit", "~> 1.4"
-  spec.dependency 'ZegoUIKit'
+  spec.dependency 'ZegoUIKit','>= 2.0.0'
 
 end
