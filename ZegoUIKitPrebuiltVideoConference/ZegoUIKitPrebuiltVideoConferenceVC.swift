@@ -9,7 +9,7 @@ import UIKit
 import ZegoUIKitSDK
 
 @objc public protocol ZegoUIKitPrebuiltVideoConferenceVCDelegate: AnyObject {
-    @objc optional func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView?
+    @objc optional func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView?
     @objc optional func onLeaveVideoConference(_ isLeave: Bool)
     @objc optional func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell?
     @objc optional func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
@@ -106,16 +106,10 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
         return notificationView
     }()
     
-//    lazy var inRoomMessageView: ZegoInRoomMessageView = {
-//        let messageView = ZegoInRoomMessageView(frame: CGRect.zero)
-//        return messageView
-//    }()
-    
     public init(_ appID: UInt32, appSign: String, userID: String, userName: String, conferenceID: String, config: ZegoUIKitPrebuiltVideoConferenceConfig?) {
         super.init(nibName: nil, bundle: nil)
         self.help.videoConferenceVC = self
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
-        ZegoUIKit.shared.localUserInfo = ZegoUIKitUser.init(userID, userName)
         self.userID = userID
         self.userName = userName
         self.roomID = conferenceID
@@ -291,18 +285,18 @@ class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainer
     
     weak var videoConferenceVC: ZegoUIKitPrebuiltVideoConferenceVC?
     
-    public func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView? {
+    public func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView? {
         guard let userInfo = userInfo else {
             return nil
         }
         
-        let foregroundView: UIView? = self.videoConferenceVC?.delegate?.getForegroundView?(userInfo)
+        let foregroundView: ZegoBaseAudioVideoForegroundView? = self.videoConferenceVC?.delegate?.getForegroundView?(userInfo)
         if let foregroundView = foregroundView {
             return foregroundView
         } else {
             // user nomal foregroundView
             guard let videoConferenceVC = self.videoConferenceVC else { return  nil }
-            let nomalForegroundView: ZegoVideoConferenceNomalForegroundView = ZegoVideoConferenceNomalForegroundView.init(videoConferenceVC.config, frame: .zero)
+            let nomalForegroundView: ZegoVideoConferenceNomalForegroundView = ZegoVideoConferenceNomalForegroundView.init(videoConferenceVC.config, userID: userInfo.userID, frame: .zero)
             nomalForegroundView.userInfo = userInfo
             return nomalForegroundView
         }
