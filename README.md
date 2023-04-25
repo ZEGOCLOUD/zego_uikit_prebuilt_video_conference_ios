@@ -12,6 +12,8 @@
 
 ## Integrate the SDK
 
+[![Tutorial | How to build video conference using iOS in 10 mins with ZEGOCLOUD](https://res.cloudinary.com/marcomontalbano/image/upload/v1682409633/video_to_markdown/images/youtube--A4E8drD4_xE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/A4E8drD4_xE "Tutorial | How to build video conference using iOS in 10 mins with ZEGOCLOUD")
+
 ### Add ZegoUIKitPrebuiltVideoConference as dependencies
 - Open Terminal, navigate to your project's root directory, and run the following to create a `podfile`: 
     ```
