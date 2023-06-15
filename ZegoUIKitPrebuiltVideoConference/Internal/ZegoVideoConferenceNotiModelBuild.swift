@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import ZegoUIKitSDK
+import ZegoUIKit
 
 class ZegoVideoConferenceNotiModel: NSObject {
     var messageID: Int64 = 0
