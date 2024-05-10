@@ -50,8 +50,8 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     private var userID: String?
     private var userName: String?
     private var roomID: String?
-    private var isHidenMenuBar: Bool = false
-    private var isHidenTopMenuBar: Bool = false
+    private var isHiddenMenuBar: Bool = false
+    private var isHiddenTopMenuBar: Bool = false
     private var timer: ZegoTimer? = ZegoTimer(1000)
     private var timerCount: Int = 3
     private var currentBottomMenuBar: UIView?
@@ -108,6 +108,11 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     
     public init(_ appID: UInt32, appSign: String, userID: String, userName: String, conferenceID: String, config: ZegoUIKitPrebuiltVideoConferenceConfig?) {
         super.init(nibName: nil, bundle: nil)
+      
+        let zegoLanguage: ZegoLanguage = config?.languageCode ?? .english
+        let zegoUIKitLanguage = ZegoUIKitLanguage(rawValue: zegoLanguage.rawValue)!
+        ZegoUIKitTranslationTextConfig.shared.languageCode = zegoUIKitLanguage;
+      
         self.help.videoConferenceVC = self
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
         self.userID = userID
@@ -115,6 +120,7 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
         self.roomID = conferenceID
         if let config = config {
             self.config = config
+            self.help.translationText = config.translationText
         }
     }
     
@@ -198,12 +204,12 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
         timer.setEventHandler {
             if self.timerCount == 0 {
                 if self.config.bottomMenuBarConfig.hideAutomatically {
-                    if !self.isHidenMenuBar {
+                    if !self.isHiddenMenuBar {
                         self.hiddenMenuBar(true)
                     }
                 }
                 if self.config.topMenuBarConfig.hideAutomatically {
-                    if !self.isHidenTopMenuBar {
+                    if !self.isHiddenTopMenuBar {
                         self.hiddenTopMenuBar(isHidden: true)
                     }
                 }
@@ -217,10 +223,10 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     @objc func tapClick() {
         if self.config.bottomMenuBarConfig.hideByClick || self.config.topMenuBarConfig.hideByClick {
             if self.config.bottomMenuBarConfig.hideByClick {
-                self.hiddenMenuBar(!self.isHidenMenuBar)
+                self.hiddenMenuBar(!self.isHiddenMenuBar)
             }
             if self.config.topMenuBarConfig.hideByClick {
-                self.hiddenTopMenuBar(isHidden: !self.isHidenTopMenuBar)
+                self.hiddenTopMenuBar(isHidden: !self.isHiddenTopMenuBar)
             }
             guard let timer = timer else {
                 return
@@ -241,7 +247,7 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     }
     
     private func hiddenMenuBar(_ isHidden: Bool) {
-        self.isHidenMenuBar = isHidden
+        self.isHiddenMenuBar = isHidden
         UIView.animate(withDuration: 0.5) {
             if self.config.bottomMenuBarConfig.hideAutomatically {
                 let bottomY: CGFloat = isHidden ? UIScreen.main.bounds.size.height:UIScreen.main.bounds.size.height - self.bottomBarHeight
@@ -252,7 +258,7 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     }
     
     private func hiddenTopMenuBar(isHidden: Bool) {
-        self.isHidenTopMenuBar = isHidden
+        self.isHiddenTopMenuBar = isHidden
         UIView.animate(withDuration: 0.5) {
             if self.config.topMenuBarConfig.hideAutomatically {
                 let topY: CGFloat = isHidden ? -self.topMenuBarHeight : 0
@@ -284,7 +290,8 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
 class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainerDelegate, ZegoInRoomNotificationViewDelegate {
     
     weak var videoConferenceVC: ZegoUIKitPrebuiltVideoConferenceVC?
-    
+    public var translationText: ZegoTranslationText = ZegoTranslationText()
+
     public func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView? {
         guard let userInfo = userInfo else {
             return nil
@@ -319,7 +326,7 @@ class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainer
         if let cell = cell {
             return cell
         } else {
-            let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: "joins the conference.", isUserLeaveNoti: false, isUserJoinNoti: true)
+            let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: self.translationText.joinConferenceTitle, isUserLeaveNoti: false, isUserJoinNoti: true)
             let conferenceCell: ZegoVideoConferenceNotiCell = tableView.dequeueReusableCell(withIdentifier: "ZegoVideoConferenceNotiCell") as! ZegoVideoConferenceNotiCell
             conferenceCell.messageModel = messageModel
             conferenceCell.selectionStyle = .none
@@ -333,7 +340,7 @@ class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainer
         if let cell = cell {
             return cell
         } else {
-            let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: "left the conference.", isUserLeaveNoti: true, isUserJoinNoti: false)
+            let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: self.translationText.leftConferenceTitle, isUserLeaveNoti: true, isUserJoinNoti: false)
             let conferenceCell: ZegoVideoConferenceNotiCell = tableView.dequeueReusableCell(withIdentifier: "ZegoVideoConferenceNotiCell") as! ZegoVideoConferenceNotiCell
             conferenceCell.messageModel = messageModel
             conferenceCell.selectionStyle = .none
@@ -347,13 +354,13 @@ class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainer
     }
     
     func getJoinCellHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, uiKitUser: ZegoUIKitUser) -> CGFloat {
-        let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: "joins the conference.", isUserLeaveNoti: false, isUserJoinNoti: true)
+        let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: self.translationText.joinConferenceTitle, isUserLeaveNoti: false, isUserJoinNoti: true)
         let cellHeight: CGFloat = self.videoConferenceVC?.delegate?.getJoinCellHeight?(tableView, heightForRowAt: indexPath, uiKitUser: uiKitUser) ?? messageModel.messageHeight + 10 + 4.0
         return cellHeight
     }
     
     func getLeaveCellHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, uiKitUser: ZegoUIKitUser) -> CGFloat {
-        let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: "left the conference.", isUserLeaveNoti: false, isUserJoinNoti: true)
+        let messageModel: ZegoVideoConferenceNotiModel = ZegoVideoConferenceNotiModelBuild.buildModel(with: uiKitUser, message: self.translationText.leftConferenceTitle, isUserLeaveNoti: false, isUserJoinNoti: true)
         let cellHeight: CGFloat = self.videoConferenceVC?.delegate?.getJoinCellHeight?(tableView, heightForRowAt: indexPath, uiKitUser: uiKitUser) ?? messageModel.messageHeight + 10 + 4.0
         return cellHeight
     }

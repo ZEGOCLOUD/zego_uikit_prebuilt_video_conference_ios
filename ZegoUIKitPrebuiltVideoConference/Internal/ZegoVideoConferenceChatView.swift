@@ -20,7 +20,13 @@ class ZegoVideoConferenceChatView: UIView {
     let help: ZegoVideoConferenceChatView_Help = ZegoVideoConferenceChatView_Help()
     
     var lastFrame: CGRect = CGRect.zero
-    
+    public var translationText: ZegoTranslationText = ZegoTranslationText() {
+      didSet{
+        self.messageInputView.placeHolder = self.translationText.chatMessagePlaceholder
+        self.help.translationText = self.translationText
+      }
+    }
+
     lazy var backgroundView: UIView = {
         let view: UIView = UIView()
         view.backgroundColor = UIColor.colorWithHexString("#171821", alpha: 0.6)
@@ -32,7 +38,7 @@ class ZegoVideoConferenceChatView: UIView {
     lazy var messageInputView: ZegoInRoomMessageInput = {
         let inputView = ZegoInRoomMessageInput()
         inputView.minHeight = 55
-        inputView.placeHolder = "Send a message to everyone"
+        inputView.placeHolder = self.translationText.chatMessagePlaceholder
         return inputView
     }()
     
@@ -131,7 +137,8 @@ class ZegoVideoConferenceChatView: UIView {
 class ZegoVideoConferenceChatView_Help: NSObject, ZegoInRoomChatViewDelegate {
     
     weak var chatView: ZegoVideoConferenceChatView?
-    
+    var translationText: ZegoTranslationText = ZegoTranslationText()
+
     func getChatViewHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat {
         return 49.0
     }
@@ -147,7 +154,7 @@ class ZegoVideoConferenceChatView_Help: NSObject, ZegoInRoomChatViewDelegate {
         let label: UILabel = UILabel()
         label.frame = CGRect(x: closeButton.frame.maxX + 5, y: 11, width: 100, height: 27)
         label.font = UIFont.systemFont(ofSize: 18)
-        label.text = "Chat"
+        label.text = self.translationText.chatMessageTitle
         label.textColor = UIColor.white
         view.addSubview(label)
         return view

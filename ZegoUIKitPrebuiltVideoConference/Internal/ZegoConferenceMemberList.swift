@@ -40,7 +40,7 @@ class ZegoConferenceMemberList: UIView {
     }
     
     weak var delegate: ZegoConferenceMemberListDelegate?
-    
+    var translationText: ZegoTranslationText = ZegoTranslationText()
     lazy var backgroundView: UIView = {
         let view: UIView = UIView()
         view.backgroundColor = UIColor.colorWithHexString("#171821", alpha: 0.6)
@@ -102,6 +102,7 @@ extension ZegoConferenceMemberList: ZegoMemberListDelegate, ZegoMemberListHeader
             return headView
         } else {
             let headView: ZegoMemberListHeaderView = ZegoMemberListHeaderView()
+            headView.translationText = self.translationText
             headView.delegate = self
             return headView
         }
@@ -127,7 +128,11 @@ protocol ZegoMemberListHeaderViewDelegate: AnyObject {
 class ZegoMemberListHeaderView: UIView {
     
     weak var delegate: ZegoMemberListHeaderViewDelegate?
-    
+    public var translationText: ZegoTranslationText = ZegoTranslationText() {
+        didSet {
+          self.titleLabel.text = self.translationText.memberListTitle
+        }
+    }
     lazy var closeButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(buttonClick), for: .touchUpInside)
@@ -137,7 +142,7 @@ class ZegoMemberListHeaderView: UIView {
     
     lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Member"
+        label.text = self.translationText.memberListTitle
         label.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         label.textColor = UIColor.colorWithHexString("#FFFFFF")
         return label

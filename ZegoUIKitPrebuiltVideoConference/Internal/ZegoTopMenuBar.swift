@@ -139,16 +139,16 @@ class ZegoTopMenuBar: UIView {
                 endButtonComponent.iconLeave = ZegoUIKitVideoConferenceIconSetType.top_icon_hand_up.load()
                 if let leaveConfirmDialogInfo = self.config.leaveConfirmDialogInfo {
                     if leaveConfirmDialogInfo.title == "" || leaveConfirmDialogInfo.title == nil {
-                        leaveConfirmDialogInfo.title = "Leave the conference"
+                        leaveConfirmDialogInfo.title = self.config.translationText.leaveConferenceTitle
                     }
                     if leaveConfirmDialogInfo.message == "" || leaveConfirmDialogInfo.title == nil {
-                        leaveConfirmDialogInfo.message = "Are you sure to leave the conference?"
+                        leaveConfirmDialogInfo.message = self.config.translationText.leaveConferenceMessage
                     }
                     if leaveConfirmDialogInfo.cancelButtonName == "" || leaveConfirmDialogInfo.cancelButtonName == nil  {
-                        leaveConfirmDialogInfo.cancelButtonName = "Cancel"
+                        leaveConfirmDialogInfo.cancelButtonName = self.config.translationText.dialogCancelButton
                     }
                     if leaveConfirmDialogInfo.confirmButtonName == "" || leaveConfirmDialogInfo.confirmButtonName == nil  {
-                        leaveConfirmDialogInfo.confirmButtonName = "Confirm"
+                        leaveConfirmDialogInfo.confirmButtonName = self.config.translationText.dialogConfirmButton
                     }
                     if leaveConfirmDialogInfo.dialogPresentVC == nil  {
                         leaveConfirmDialogInfo.dialogPresentVC = self.showQuitDialogVC
@@ -178,6 +178,7 @@ class ZegoTopMenuBar: UIView {
         memberListView.showCameraStateOnMemberList = self.config.memberListConfig.showCameraState
         memberListView.showMicroPhoneStateOnMemberList = self.config.memberListConfig.showMicrophoneState
         memberListView.delegate = self.showQuitDialogVC as? ZegoConferenceMemberListDelegate
+        memberListView.translationText = self.config.translationText
         memberListView.frame = CGRect(x: 0, y: 0, width: self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight)
         self.showQuitDialogVC?.view.addSubview(memberListView)
     }
@@ -185,6 +186,7 @@ class ZegoTopMenuBar: UIView {
     @objc func messageButtonClick() {
         let messageView: ZegoVideoConferenceChatView = ZegoVideoConferenceChatView()
         messageView.delegate = self.showQuitDialogVC as? ZegoVideoConferenceChatViewDelegate
+        messageView.translationText = self.config.translationText
         messageView.frame = CGRect(x: 0, y: 0, width:self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight )
         self.showQuitDialogVC?.view.addSubview(messageView)
     }
