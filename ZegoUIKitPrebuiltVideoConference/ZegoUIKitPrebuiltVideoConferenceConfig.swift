@@ -28,21 +28,14 @@ public class ZegoUIKitPrebuiltVideoConferenceConfig: NSObject {
     /// The maximum number of buttons that can be displayed in the ControlBar. If this value is exceeded, the "More" button is displayed
     /// Whether to display information about the Leave Room dialog box when the hang up button is clicked. If it is not set, it will not be displayed. If it is set, it will be displayed.
     public var leaveConfirmDialogInfo: ZegoLeaveConfirmDialogInfo?
-    public var translationText: ZegoTranslationText = ZegoTranslationText()
-    public var memberListConfig: ZegoMemberListConfig = ZegoMemberListConfig()
-    public var topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
-    public var inRoomNotificationViewConfig: ZegoInRoomNotificationViewConfig = ZegoInRoomNotificationViewConfig()
-    
-    public var languageCode: ZegoLanguage = .english {
+    public var translationText: ZegoTranslationText = ZegoTranslationText(language: .english) {
       didSet{
-        if languageCode == .chinese {
-          translationText = ZegoTranslationTextZH()
-        } else {
-          translationText = ZegoTranslationText()
-        }
         topMenuBarConfig.title = translationText.topMenuBarTitle
       }
     }
+    public var memberListConfig: ZegoMemberListConfig = ZegoMemberListConfig()
+    public var topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
+    public var inRoomNotificationViewConfig: ZegoInRoomNotificationViewConfig = ZegoInRoomNotificationViewConfig()
     
     public override init() {
         super.init()
@@ -97,31 +90,38 @@ public class ZegoTopMenuBarConfig: NSObject {
 
 
 public class ZegoTranslationText : NSObject {
-  public var topMenuBarTitle: String = "Conference"
-  public var joinConferenceTitle: String = "joins the conference."
-  public var leftConferenceTitle: String = "left the conference."
-  public var memberListTitle: String = "Member"
-  public var leaveConferenceTitle: String = "Leave the conference"
-  public var leaveConferenceMessage: String = "Are you sure to leave the conference?"
-  public var dialogCancelButton: String = "Cancel"
-  public var dialogConfirmButton: String = "Confirm"
-  public var chatMessagePlaceholder: String = "Send a message to everyone"
-  public var chatMessageTitle: String = "Chat"
+    var language :ZegoLanguage  = .english
+  
+    public var topMenuBarTitle: String = "Conference"
+    public var joinConferenceTitle: String = "joins the conference."
+    public var leftConferenceTitle: String = "left the conference."
+    public var memberListTitle: String = "Member"
+    public var leaveConferenceTitle: String = "Leave the conference"
+    public var leaveConferenceMessage: String = "Are you sure to leave the conference?"
+    public var dialogCancelButton: String = "Cancel"
+    public var dialogConfirmButton: String = "Confirm"
+    public var chatMessagePlaceholder: String = "Send a message to everyone"
+    public var chatMessageTitle: String = "Chat"
+  
+    public init(language:ZegoLanguage) {
+    super.init()
+    self.language = language
+    if language == .chinese {
+      topMenuBarTitle = "会议"
+      joinConferenceTitle = "加入回忆"
+      leftConferenceTitle = "已离开会议"
+      memberListTitle = "成员"
+      leaveConferenceTitle = "离开会议"
+      leaveConferenceMessage = "确定要离开会议吗？"
+      dialogCancelButton = "取消"
+      dialogConfirmButton = "确认"
+      chatMessagePlaceholder = "向所有人发送信息"
+      chatMessageTitle = "聊天"
+      }
+    }
+    public func getLanguage() -> ZegoLanguage {
+      return self.language
+    }
 }
 
-public class ZegoTranslationTextZH : ZegoTranslationText {
-  override init() {
-    super.init()
-    topMenuBarTitle = "会议"
-    joinConferenceTitle = "加入回忆"
-    leftConferenceTitle = "已离开会议"
-    memberListTitle = "成员"
-    leaveConferenceTitle = "离开会议"
-    leaveConferenceMessage = "确定要离开会议吗？"
-    dialogCancelButton = "取消"
-    dialogConfirmButton = "确认"
-    chatMessagePlaceholder = "向所有人发送信息"
-    chatMessageTitle = "聊天"
-  }
-}
 

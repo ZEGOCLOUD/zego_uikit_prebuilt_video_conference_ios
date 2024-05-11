@@ -40,7 +40,7 @@ class ZegoConferenceMemberList: UIView {
     }
     
     weak var delegate: ZegoConferenceMemberListDelegate?
-    var translationText: ZegoTranslationText = ZegoTranslationText()
+  var translationText: ZegoTranslationText = ZegoTranslationText(language: .english)
     lazy var backgroundView: UIView = {
         let view: UIView = UIView()
         view.backgroundColor = UIColor.colorWithHexString("#171821", alpha: 0.6)
@@ -128,7 +128,7 @@ protocol ZegoMemberListHeaderViewDelegate: AnyObject {
 class ZegoMemberListHeaderView: UIView {
     
     weak var delegate: ZegoMemberListHeaderViewDelegate?
-    public var translationText: ZegoTranslationText = ZegoTranslationText() {
+    public var translationText: ZegoTranslationText = ZegoTranslationText(language: .english) {
         didSet {
           self.titleLabel.text = self.translationText.memberListTitle
         }

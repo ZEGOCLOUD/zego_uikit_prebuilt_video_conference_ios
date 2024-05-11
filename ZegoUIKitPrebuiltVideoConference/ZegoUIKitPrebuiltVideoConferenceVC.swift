@@ -109,9 +109,9 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     public init(_ appID: UInt32, appSign: String, userID: String, userName: String, conferenceID: String, config: ZegoUIKitPrebuiltVideoConferenceConfig?) {
         super.init(nibName: nil, bundle: nil)
       
-        let zegoLanguage: ZegoLanguage = config?.languageCode ?? .english
+        let zegoLanguage: ZegoLanguage = ZegoLanguage(rawValue: (config?.translationText.getLanguage())!.rawValue) ?? .english
         let zegoUIKitLanguage = ZegoUIKitLanguage(rawValue: zegoLanguage.rawValue)!
-        ZegoUIKitTranslationTextConfig.shared.languageCode = zegoUIKitLanguage;
+        ZegoUIKitTranslationTextConfig.shared.translationText = ZegoUIKitTranslationText(language: zegoUIKitLanguage);
       
         self.help.videoConferenceVC = self
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
@@ -290,7 +290,7 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
 class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainerDelegate, ZegoInRoomNotificationViewDelegate {
     
     weak var videoConferenceVC: ZegoUIKitPrebuiltVideoConferenceVC?
-    public var translationText: ZegoTranslationText = ZegoTranslationText()
+    public var translationText: ZegoTranslationText = ZegoTranslationText(language: .english)
 
     public func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView? {
         guard let userInfo = userInfo else {
