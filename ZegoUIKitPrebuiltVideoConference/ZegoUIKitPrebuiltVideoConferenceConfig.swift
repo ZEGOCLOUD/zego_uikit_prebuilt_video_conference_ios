@@ -8,10 +8,6 @@
 import UIKit
 import ZegoUIKit
 
-@objc public enum ZegoLanguage : UInt32 {
-    case english
-    case chinese
-}
 
 public class ZegoUIKitPrebuiltVideoConferenceConfig: NSObject {
     public var audioVideoViewConfig: ZegoPrebuiltAudioVideoViewConfig = ZegoPrebuiltAudioVideoViewConfig()
@@ -28,7 +24,7 @@ public class ZegoUIKitPrebuiltVideoConferenceConfig: NSObject {
     /// The maximum number of buttons that can be displayed in the ControlBar. If this value is exceeded, the "More" button is displayed
     /// Whether to display information about the Leave Room dialog box when the hang up button is clicked. If it is not set, it will not be displayed. If it is set, it will be displayed.
     public var leaveConfirmDialogInfo: ZegoLeaveConfirmDialogInfo?
-    public var translationText: ZegoTranslationText = ZegoTranslationText(language: .english) {
+    public var translationText: ZegoTranslationText = ZegoTranslationText(language: .ENGLISH) {
       didSet{
         topMenuBarConfig.title = translationText.topMenuBarTitle
       }
@@ -90,7 +86,7 @@ public class ZegoTopMenuBarConfig: NSObject {
 
 
 public class ZegoTranslationText : NSObject {
-    var language :ZegoLanguage  = .english
+    var language :ZegoUIKitLanguage  = .ENGLISH
   
     public var topMenuBarTitle: String = "Conference"
     public var joinConferenceTitle: String = "joins the conference."
@@ -103,10 +99,10 @@ public class ZegoTranslationText : NSObject {
     public var chatMessagePlaceholder: String = "Send a message to everyone"
     public var chatMessageTitle: String = "Chat"
   
-    public init(language:ZegoLanguage) {
+    public init(language:ZegoUIKitLanguage) {
     super.init()
     self.language = language
-    if language == .chinese {
+    if language == .CHS {
       topMenuBarTitle = "会议"
       joinConferenceTitle = "加入回忆"
       leftConferenceTitle = "已离开会议"
@@ -119,7 +115,7 @@ public class ZegoTranslationText : NSObject {
       chatMessageTitle = "聊天"
       }
     }
-    public func getLanguage() -> ZegoLanguage {
+    public func getLanguage() -> ZegoUIKitLanguage {
       return self.language
     }
 }

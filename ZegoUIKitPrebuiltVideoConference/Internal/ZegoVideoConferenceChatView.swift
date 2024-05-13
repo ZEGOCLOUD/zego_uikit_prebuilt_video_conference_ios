@@ -20,7 +20,7 @@ class ZegoVideoConferenceChatView: UIView {
     let help: ZegoVideoConferenceChatView_Help = ZegoVideoConferenceChatView_Help()
     
     var lastFrame: CGRect = CGRect.zero
-    public var translationText: ZegoTranslationText = ZegoTranslationText(language: .english) {
+    public var translationText: ZegoTranslationText = ZegoTranslationText(language: .ENGLISH) {
       didSet{
         self.messageInputView.placeHolder = self.translationText.chatMessagePlaceholder
         self.help.translationText = self.translationText
@@ -137,7 +137,7 @@ class ZegoVideoConferenceChatView: UIView {
 class ZegoVideoConferenceChatView_Help: NSObject, ZegoInRoomChatViewDelegate {
     
     weak var chatView: ZegoVideoConferenceChatView?
-    var translationText: ZegoTranslationText = ZegoTranslationText(language: .english)
+    var translationText: ZegoTranslationText = ZegoTranslationText(language: .ENGLISH)
 
     func getChatViewHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat {
         return 49.0
