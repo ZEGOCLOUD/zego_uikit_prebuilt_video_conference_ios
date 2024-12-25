@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ZegoUIKitPrebuiltVideoConference"
-  spec.version      = "2.3.4"
+  spec.version      = "2.3.5"
   spec.summary      = "ZegoUIKitPrebuiltVideoConference iOS SDK."
 
   # This description is used to generate tags and improve search results.
@@ -63,7 +63,7 @@ Pod::Spec.new do |spec|
   #  the deployment target. You can optionally include the target after the platform.
   #
 
-  spec.platform     = :ios, "12.0"
+  spec.platform     = :ios, "13.0"
 
   #  When using multiple platforms
   # spec.ios.deployment_target = "5.0"
@@ -133,6 +133,6 @@ Pod::Spec.new do |spec|
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   # spec.dependency "JSONKit", "~> 1.4"
-  spec.dependency 'ZegoUIKit','>= 2.11.4'
+    spec.dependency 'ZegoUIKit','>=2.13.0'
 
 end

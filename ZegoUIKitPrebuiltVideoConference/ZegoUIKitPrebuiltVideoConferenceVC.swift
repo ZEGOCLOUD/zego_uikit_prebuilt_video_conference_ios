@@ -8,6 +8,10 @@
 import UIKit
 import ZegoUIKit
 
+
+let conferenceInitReportString = "conference/init"
+let conferenceUnInitReportString = "conference/unInit"
+
 @objc public protocol ZegoUIKitPrebuiltVideoConferenceVCDelegate: AnyObject {
     @objc optional func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView?
     @objc optional func onLeaveVideoConference(_ isLeave: Bool)
@@ -109,6 +113,20 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
     public init(_ appID: UInt32, appSign: String, userID: String, userName: String, conferenceID: String, config: ZegoUIKitPrebuiltVideoConferenceConfig?) {
         super.init(nibName: nil, bundle: nil)
       
+        let conferenceSDKBundle = Bundle(identifier: "org.cocoapods.ZegoUIKitPrebuiltVideoConference")
+        let conferenceVersion = conferenceSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        
+        let UIKitSDKBundle = Bundle(identifier: "com.zegocloud.uikit")
+        let UIKitVersion = UIKitSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        
+        let reportData = ["user_id": userID as AnyObject,
+                     "platform": "iOS" as AnyObject,
+                     "platform_version": UIDevice.current.systemVersion as AnyObject,
+                     "uikit_version": UIKitVersion as AnyObject,
+                     "conference_version" :conferenceVersion as AnyObject]
+        ReportUtil.sharedInstance().create(withAppID: appID, signOrToken: appSign, commonParams: reportData)
+        
+        
         let zegoLanguage: ZegoUIKitLanguage = ZegoUIKitLanguage(rawValue: (config?.translationText.getLanguage())!.rawValue) ?? .ENGLISH
         let zegoUIKitLanguage = ZegoUIKitLanguage(rawValue: zegoLanguage.rawValue)!
         ZegoUIKitTranslationTextConfig.shared.translationText = ZegoUIKitTranslationText(language: zegoUIKitLanguage);
@@ -122,6 +140,8 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
             self.config = config
             self.help.translationText = config.translationText
         }
+        ReportUtil.sharedInstance().reportEvent(conferenceInitReportString, paramsDict: [:])
+        
     }
     
     required public init?(coder: NSCoder) {
@@ -276,7 +296,9 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
               let userID = self.userID,
               let userName = self.userName
         else { return }
-        ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID)
+        ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID) { error in
+            
+        }
         ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenJoining)
         ZegoUIKit.shared.turnMicrophoneOn(userID, isOn: self.config.turnOnMicrophoneWhenJoining)
     }
@@ -288,7 +310,10 @@ open class ZegoUIKitPrebuiltVideoConferenceVC: UIViewController {
 }
 
 class ZegoUIKitPrebuiltVideoConferenceVC_Help: NSObject, ZegoAudioVideoContainerDelegate, ZegoInRoomNotificationViewDelegate {
-    
+    func onUserIDUpdated(userID: String) -> String? {
+        return ""
+    }
+
     weak var videoConferenceVC: ZegoUIKitPrebuiltVideoConferenceVC?
     public var translationText: ZegoTranslationText = ZegoTranslationText(language: .ENGLISH)
 
@@ -382,6 +407,7 @@ extension ZegoUIKitPrebuiltVideoConferenceVC: ZegoVideoConferenceDarkBottomMenuB
     func onLeaveVideoConference(_ isLeave: Bool) {
         if isLeave {
             self.dismiss(animated: true, completion: nil)
+            ReportUtil.sharedInstance().reportEvent(conferenceUnInitReportString, paramsDict: [:])
         }
         self.delegate?.onLeaveVideoConference?(isLeave)
     }

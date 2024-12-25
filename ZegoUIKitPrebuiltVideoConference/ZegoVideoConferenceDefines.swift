@@ -63,8 +63,8 @@ enum ZegoUIKitVideoConferenceIconSetType: String, Hashable {
 
 let UIkitScreenHeight = UIScreen.main.bounds.size.height
 let UIKitScreenWidth = UIScreen.main.bounds.size.width
-let UIKitBottomSafeAreaHeight = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
-let UIKitTopSafeAreaHeight = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
+let UIKitBottomSafeAreaHeight = UIApplication.shared.windows.first { $0.isKeyWindow }?.safeAreaInsets.bottom ?? 0
+let UIKitTopSafeAreaHeight = UIApplication.shared.windows.first { $0.isKeyWindow }?.safeAreaInsets.top ?? 0
 
 func adaptLandscapeWidth(_ x: CGFloat) -> CGFloat {
     return x * (UIKitScreenWidth / 375.0)
@@ -75,7 +75,7 @@ func adaptLandscapeHeight(_ x: CGFloat) -> CGFloat {
 }
 
 func currentViewController() -> (UIViewController?) {
-   var window = UIApplication.shared.keyWindow
+   var window = UIApplication.shared.windows.first { $0.isKeyWindow }
    if window?.windowLevel != UIWindow.Level.normal{
      let windows = UIApplication.shared.windows
      for  windowTemp in windows{
